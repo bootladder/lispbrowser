@@ -1,0 +1,12 @@
+version: "2.0"
+services:
+
+  lispbrowser:
+    container_name: "lispbrowser"
+    image: node:latest
+    command: "/app/runincontainer.sh"
+    working_dir: /app
+    ports:
+      - "15080:5173"
+    volumes:
+      - "./frontend:/app"

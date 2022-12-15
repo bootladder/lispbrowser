@@ -21,6 +21,9 @@ const awesomeeval = (expr) => {
         return parseInt(expr)
 
     const tokens = expr
+    if(false == tokens[0] in functable){
+        return "NO FUNC"
+    }
     const func = functable[tokens[0]]
     const args = tokens.slice(1)
     const evalargs = args.map( arg => awesomeeval(arg))
@@ -40,7 +43,7 @@ export default {
             expr:expr,
             sexpr:sexpr,
             inputexpr: ref(""),
-            evalresult: ref(""),
+            lastinputexpression: ref(""),
             ...stuff,
 		}
 	},
@@ -54,25 +57,33 @@ export default {
     "inputexpression": {async handler(n,o) {
         if(this.inputexpression == "")
             return
-        const parsed = sexpr(this.inputexpression)[0]
-        //this.evalresult = "FIUCK"
-        this.evalresult = awesomeeval(parsed)
+        try{
+            this.lastinputexpression = this.inputexpression
+        }catch(e){
+        }
         this.inputexpression = ""
     },}
 
       },
 
 	methods: {
-        awesomeeval: function(expr){
-            //const parsed = awesomeparse(expr)
-            const parsed = sexpr(expr)[0]
-            return awesomeeval(parsed)
-            //return parsed
-        }
+        //awesomeeval: function(expr){
+        //    //const parsed = awesomeparse(expr)
+        //    const parsed = sexpr(expr)[0]
+        //    return awesomeeval(parsed)
+        //    //return parsed
+        //}
 	},
 
 	computed: {
-            parsed : function() {return this.sexpr(this.expr)}
+            parsed : function() {return this.sexpr(this.expr)},
+            evalresult : function() {
+                if(this.lastinputexpression == "")
+                    return "No eval yet"
+                //return "FUCK"
+                return awesomeeval(this.sexpr(this.lastinputexpression)[0])
+                //return awesomeeval(this.sexpr("(add 1 1)")[0])
+            },
 	},
 
 
@@ -100,6 +111,24 @@ export default {
     <div class="bg-red-100">
         wat
     </div>
+    <div class="p-1 m-1 bg-blue-100">
+        WORKING AREA: {{workingarea}}
+    </div>
+    <div v-if='true' class="sectionA">
+        Eval: {{evalresult}}
+    </div>
+    <div class="sectionA bg-red-100">
+        JS AREA
+        <div class="w-[100px] h-[100px]">
+            <input class="w-full h-full" value="hello"/>
+        </div >
+    </div>
+</template>
+
+<!-- 
+    <div class="p-1 m-1 bg-blue-100">
+        INPUT EXPR: {{inputexpression}}
+    </div>
     <div class="bg-red-100">
         EXPR: {{expr}}
     </div>
@@ -109,14 +138,5 @@ export default {
     <div class="bg-red-100">
         Eval: {{awesomeeval(expr)}}
     </div>
-    <div class="p-1 m-1 bg-blue-100">
-        INPUT EXPR: {{inputexpression}}
-    </div>
-    <div class="p-1 m-1 bg-blue-100">
-        WORKING AREA: {{workingarea}}
-    </div>
-    <div v-if='true' class="sectionA">
-        Eval: {{evalresult}}
-    </div>
-</template>
 
+-->

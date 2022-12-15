@@ -1,5 +1,7 @@
 <script>
 import {sexpr} from './sexpr.js'
+import keyboard from './keyboard.js'
+const {...stuff} = keyboard()
 
 import {onMounted,ref, watch} from 'vue/dist/vue.esm-bundler.js';
 
@@ -36,7 +38,10 @@ export default {
 	setup () {
 		return {
             expr:expr,
-            sexpr:sexpr
+            sexpr:sexpr,
+            inputexpr: ref(""),
+            evalresult: ref(""),
+            ...stuff,
 		}
 	},
 
@@ -45,6 +50,16 @@ export default {
     "env.thedatamodel": { async handler(newr, oldr) {
             }, deep:true,
         },
+
+    "inputexpression": {async handler(n,o) {
+        if(this.inputexpression == "")
+            return
+        const parsed = sexpr(this.inputexpression)[0]
+        //this.evalresult = "FIUCK"
+        this.evalresult = awesomeeval(parsed)
+        this.inputexpression = ""
+    },}
+
       },
 
 	methods: {
@@ -67,6 +82,19 @@ export default {
 
 </script>
 
+<style>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .sectionA  {
+        @apply border border-black p-1 m-1
+    }
+
+}
+</style>
+
 <template>
 
     <div class="bg-red-100">
@@ -80,6 +108,15 @@ export default {
     </div>
     <div class="bg-red-100">
         Eval: {{awesomeeval(expr)}}
+    </div>
+    <div class="p-1 m-1 bg-blue-100">
+        INPUT EXPR: {{inputexpression}}
+    </div>
+    <div class="p-1 m-1 bg-blue-100">
+        WORKING AREA: {{workingarea}}
+    </div>
+    <div v-if='true' class="sectionA">
+        Eval: {{evalresult}}
     </div>
 </template>
 

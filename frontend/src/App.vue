@@ -5,10 +5,73 @@ const {...stuff} = keyboard()
 
 import {onMounted,ref, watch} from 'vue/dist/vue.esm-bundler.js';
 
+const hooha = "hellohooha"
+const fuckobj = {}
+fuckobj.name = "fuck yeah"
+
 const expr1   = ref('(concat "hello world" (concat "other"))')
 const expr2   = ref('(add 1 1 1)')
 const expr    = ref('(add 1 1 (add 1 1) )')
 //const expr = ref('(concat "hello world")')
+
+const mytree =  [0,1,1,2,0]
+//const mystring =
+//`
+//d
+// dc
+// dr
+//  d
+//d
+//`
+const mysource = 
+`
+//const tokens = mystring.trim().split("\\n")
+//const sublists = tokens.filter(t => t[0] != " ")
+//const nestings = tokens.map(t => [t.length - t.trimLeft().length ,t])
+//
+//const decend = (tree,level) => {
+//    const copytree = JSON.parse(JSON.stringify(tree))
+//    tree.forEach(element => {
+//        if(element[0] == " "){
+//             //tree.push([t,decend(
+//        }
+//    })
+//
+//    return tree
+//}
+
+var position = -1
+var result = ""
+for(var i = 0; i < mytree.length; i++){
+    if(mytree[i] == position) {
+        result += "\\n  </div><div>"
+    } 
+    if(mytree[i] > position) {
+        result += "\\n  <div>"
+    }
+    if(mytree[i] < position) {
+        const times = (position - mytree[i] + 1)
+        for(var j = 0; j< times; j++){
+            result += "\\n  </div>"
+        }
+        result += "<div>"
+    }
+    position = mytree[i]
+}
+
+const times = position + 1
+for(var j = 0; j< times; j++){
+    result += "\\n  </div>"
+}
+
+result
+
+//decend(tokens,0)
+//nestings
+
+//const fuck = [ [1,[1,[]],[1,[[1,[]] ]        ,     [1,[]] ]]]
+//fuck
+`
 
 const functable = {
     concat: (args) => { return args.join("")},
@@ -45,6 +108,9 @@ export default {
             inputexpr: ref(""),
             lastinputexpression: ref(""),
             ...stuff,
+            jsarea:ref(""),
+            jsevalresult:ref(""),
+            mysource:ref(mysource),
 		}
 	},
 
@@ -54,15 +120,15 @@ export default {
             }, deep:true,
         },
 
-    "inputexpression": {async handler(n,o) {
-        if(this.inputexpression == "")
-            return
-        try{
-            this.lastinputexpression = this.inputexpression
-        }catch(e){
-        }
-        this.inputexpression = ""
-    },}
+    //"inputexpression": {async handler(n,o) {
+    //    if(this.inputexpression == "")
+    //        return
+    //    try{
+    //        this.lastinputexpression = this.inputexpression
+    //    }catch(e){
+    //    }
+    //    this.inputexpression = ""
+    //},}
 
       },
 
@@ -73,6 +139,11 @@ export default {
         //    return awesomeeval(parsed)
         //    //return parsed
         //}
+
+        evaljsarea: function() {
+            //this.jsevalresult = "yay eval this: " + this.jsarea + eval(this.jsarea)
+            this.jsevalresult = eval(this.jsarea)
+        }
 	},
 
 	computed: {
@@ -80,10 +151,14 @@ export default {
             evalresult : function() {
                 if(this.lastinputexpression == "")
                     return "No eval yet"
-                //return "FUCK"
                 return awesomeeval(this.sexpr(this.lastinputexpression)[0])
-                //return awesomeeval(this.sexpr("(add 1 1)")[0])
             },
+
+            jsevalresult_sourcefile: function() {
+
+                return eval(mysource)
+            }
+
 	},
 
 
@@ -108,21 +183,34 @@ export default {
 
 <template>
 
-    <div class="bg-red-100">
-        wat
-    </div>
-    <div class="p-1 m-1 bg-blue-100">
-        WORKING AREA: {{workingarea}}
-    </div>
-    <div v-if='true' class="sectionA">
-        Eval: {{evalresult}}
-    </div>
     <div class="sectionA bg-red-100">
-        JS AREA
-        <div class="w-[100px] h-[100px]">
-            <input class="w-full h-full" value="hello"/>
+        <div class="sectionA bg-blue-100"> JS AREA </div>
+
+        <div class="w-[800px] h-[200px] bg-green-100 border border-black p-2">
+            <div>USER INPUT AREA</div>
+            <textarea class="w-32 h-32" :value="this.jsarea"
+                @input="event => this.jsarea = event.target.value"
+                />
         </div >
+        <div class="m-2 w-16 h-18 bg-purple-400 p-2 border border-black rounded-xl"
+            @click="this.evaljsarea()">
+            EVAL JS
+        </div >
+        <div>
+            <div> EVAL RESULT </div>
+            <div> {{jsevalresult}} </div>
+        </div>
     </div>
+    <div class="sectionA">
+        RESULT OF SOURCE FILE {{jsevalresult_sourcefile}} 
+    </div>
+    <div class="sectionA">
+        RESULT <pre>{{jsevalresult_sourcefile}} </pre>
+    </div>
+    <div class="sectionA">
+        {{mysource}}
+    </div>
+
 </template>
 
 <!-- 
@@ -138,5 +226,15 @@ export default {
     <div class="bg-red-100">
         Eval: {{awesomeeval(expr)}}
     </div>
+
+
+    <div class="p-1 m-1 bg-blue-100">
+        WORKING AREA: {{workingarea}}
+    </div>
+    <div v-if='true' class="sectionA">
+        Eval: {{evalresult}}
+    </div>
+
+
 
 -->

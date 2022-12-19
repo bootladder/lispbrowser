@@ -5,16 +5,6 @@ const {...stuff} = keyboard()
 
 import {onMounted,ref, watch} from 'vue/dist/vue.esm-bundler.js';
 
-const hooha = "hellohooha"
-const fuckobj = {}
-fuckobj.name = "fuck yeah"
-
-const expr1   = ref('(concat "hello world" (concat "other"))')
-const expr2   = ref('(add 1 1 1)')
-const expr    = ref('(add 1 1 (add 1 1) )')
-//const expr = ref('(concat "hello world")')
-
-//const mytree =  [0,1,1,2,0]
 const mystring =
 `
 dc
@@ -60,9 +50,9 @@ for(var i = 0; i < mytree.length; i++){
     else if(mytree[i] < position) {
         const times = (position - mytree[i] + 1)
         for(var j = 0; j< times; j++){
-            result += spaces(i) + "</div>\\n"
+            result += spaces(i) + "poop" + "</div>\\n"
         }
-        result += spaces(i) + "poop" + "<" + tokenswithdepth[i][1] + ">\\n"
+        result += spaces(i) + "<" + tokenswithdepth[i][1] + ">\\n"
     }
     position = mytree[i]
 }
@@ -82,64 +72,13 @@ result = result.replaceAll("\\<d>", '<div>')
 `
 
 
-const __mysource = 
-`
-//
-//const decend = (tree,level) => {
-//    const copytree = JSON.parse(JSON.stringify(tree))
-//    tree.forEach(element => {
-//        if(element[0] == " "){
-//             //tree.push([t,decend(
-//        }
-//    })
-//
-//    return tree
-//}
-
-//result
-
-//decend(tokens,0)
-
-//nestings
-
-//const fuck = [ [1,[1,[]],[1,[[1,[]] ]        ,     [1,[]] ]]]
-//fuck
 
 
-
-`
-
-const functable = {
-    concat: (args) => { return args.join("")},
-    add: (args) => { var acc = 0; args.forEach(a => {acc = acc + a}); return acc }
-}
-
-const awesomeeval = (expr) => {
-
-    if(false == isNaN( parseInt(expr) ))
-        return parseInt(expr)
-
-    const tokens = expr
-    if(false == tokens[0] in functable){
-        return "NO FUNC"
-    }
-    const func = functable[tokens[0]]
-    const args = tokens.slice(1)
-    const evalargs = args.map( arg => awesomeeval(arg))
-    const result = func(evalargs)
-    return result
-}
-
-
-const awesomeparse = (expr) => {
-    return JSON.parse(expr)
-}
-    
 export default {
 	components: { },
 	setup () {
 		return {
-            expr:expr,
+            expr:ref("(add 1 1)"),
             sexpr:sexpr,
             inputexpr: ref(""),
             lastinputexpression: ref(""),
@@ -147,6 +86,8 @@ export default {
             jsarea:ref(""),
             jsevalresult:ref(""),
             mysource:ref(mysource),
+            dslinputarea:ref(""),
+            evaldslresult:ref("not eval yet"),
 		}
 	},
 
@@ -156,40 +97,17 @@ export default {
             }, deep:true,
         },
 
-    //"inputexpression": {async handler(n,o) {
-    //    if(this.inputexpression == "")
-    //        return
-    //    try{
-    //        this.lastinputexpression = this.inputexpression
-    //    }catch(e){
-    //    }
-    //    this.inputexpression = ""
-    //},}
 
       },
 
 	methods: {
-        //awesomeeval: function(expr){
-        //    //const parsed = awesomeparse(expr)
-        //    const parsed = sexpr(expr)[0]
-        //    return awesomeeval(parsed)
-        //    //return parsed
-        //}
-
-        evaljsarea: function() {
-            //this.jsevalresult = "yay eval this: " + this.jsarea + eval(this.jsarea)
-            this.jsevalresult = eval(this.jsarea)
+        evaldslinputarea: function() {
+            this.evaldslresult = this.dslinputarea
+            return "haha eval"
         }
 	},
 
 	computed: {
-            parsed : function() {return this.sexpr(this.expr)},
-            evalresult : function() {
-                if(this.lastinputexpression == "")
-                    return "No eval yet"
-                return awesomeeval(this.sexpr(this.lastinputexpression)[0])
-            },
-
             jsevalresult_sourcefile: function() {
 
                 return eval(mysource)
@@ -271,23 +189,29 @@ export default {
 
 
     <div class="sectionA bg-red-100">
-        <div class="sectionA bg-blue-100"> JS AREA </div>
+        <div class="sectionA bg-blue-100"> DSL AREA </div>
 
         <div class="w-[800px] h-[200px] bg-green-100 border border-black p-2">
             <div>USER INPUT AREA</div>
             <textarea class="w-32 h-32" :value="this.jsarea"
-                @input="event => this.jsarea = event.target.value"
+                @input="event => this.dslinputarea = event.target.value"
                 />
         </div >
         <div class="m-2 w-16 h-18 bg-purple-400 p-2 border border-black rounded-xl"
-            @click="this.evaljsarea()">
-            EVAL JS
+            @click="this.evaldslinputarea()">
+            EVAL DSL
         </div >
-        <div>
-            <div> EVAL RESULT </div>
-            <div> {{jsevalresult}} </div>
+        <div class="sectionA">
+            <div> EVAL DSL RESULT </div>
+            <div> {{evaldslresult}} </div>
         </div>
     </div>
+
+    <div class="mt-5 sectionA">
+        SOURCE FILE EVAL
+    </div>
+
+
     <div class="sectionA">
         RESULT OF SOURCE FILE {{jsevalresult_sourcefile}} 
     </div>
@@ -323,5 +247,38 @@ export default {
     </div>
 
 
+const hooha = "hellohooha"
+const fuckobj = {}
+fuckobj.name = "fuck yeah"
+
+const expr1   = ref('(concat "hello world" (concat "other"))')
+const expr2   = ref('(add 1 1 1)')
+const expr    = ref('(add 1 1 (add 1 1) )')
+//const expr = ref('(concat "hello world")')
+
+//const mytree =  [0,1,1,2,0]
+
+const __mysource = 
+`
+//
+//const decend = (tree,level) => {
+//    const copytree = JSON.parse(JSON.stringify(tree))
+//    tree.forEach(element => {
+//        if(element[0] == " "){
+//             //tree.push([t,decend(
+//        }
+//    })
+//
+//    return tree
+//}
+
+//result
+
+//decend(tokens,0)
+
+//nestings
+
+//const fuck = [ [1,[1,[]],[1,[[1,[]] ]        ,     [1,[]] ]]]
+//fuck
 
 -->

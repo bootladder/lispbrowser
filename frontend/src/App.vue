@@ -36,23 +36,27 @@ nestinglist
 const mytree = nestinglist
 
 
-const spaces = (index) => Array.from({length:tokenswithdepth[index][0]*2}).map(f => " ").join("")
+const _spaces = (indent) => {
+     return (index,offset) => Array.from({length:tokenswithdepth[index][0]*indent - offset*indent}).map(f => " ").join("") 
+    }
+
+const spaces = _spaces(4)
 
 var position = -1
 var result = ""
 for(var i = 0; i < mytree.length; i++){
     if(mytree[i] == position) {
-        result += spaces(i) + "</div>\\n" + spaces(i)+  "<" + tokenswithdepth[i][1] + ">\\n" 
+        result += spaces(i,0) + "</div>\\n" + spaces(i,0)+  "<" + tokenswithdepth[i][1] + ">\\n" 
     } 
     else if(mytree[i] > position) {
-        result += spaces(i) + "<" + tokenswithdepth[i][1] + ">\\n"
+        result += spaces(i,0) + "<" + tokenswithdepth[i][1] + ">\\n"
     }
     else if(mytree[i] < position) {
         const times = (position - mytree[i] + 1)
         for(var j = 0; j< times; j++){
-            result += spaces(i) + "poop" + "</div>\\n"
+            result += spaces(i, j-times+1) + "</div>\\n"
         }
-        result += spaces(i) + "<" + tokenswithdepth[i][1] + ">\\n"
+        result += spaces(i,0) + "<" + tokenswithdepth[i][1] + ">\\n"
     }
     position = mytree[i]
 }

@@ -10,18 +10,27 @@ const mystring =
 dc
  dr
   d
+   t {{ComponentName}}
   d
+   t {{AccountName}}
  dc
   dc
    dr
     d
+     t {{TransactionDate}}
     d
+     t {{TransactionDescription}}
   dc
    dr
     d
+     t {{SourceAccount}}
     d
+     t {{SourceAmount}}
    dr
     d
+     t {{DestinationAccount}}
+    d
+     t {{DestinationAmount}}
     d
 d
 `
@@ -45,7 +54,11 @@ const spaces = _spaces(4)
 var position = -1
 var result = ""
 for(var i = 0; i < mytree.length; i++){
-    if(mytree[i] == position) {
+    if(tokenswithdepth[i][1].trim()[0] == 't'){
+        result += spaces(i,0) + tokenswithdepth[i][1].trim().slice(2) + "\\n"
+        continue
+    }
+    else if(mytree[i] == position) {
         result += spaces(i,0) + "</div>\\n" + spaces(i,0)+  "<" + tokenswithdepth[i][1] + ">\\n" 
     } 
     else if(mytree[i] > position) {
@@ -69,7 +82,7 @@ for(var j = 0; j< times; j++){
 
 result = result.replaceAll("\\<dc>", '<div class="flex flex-col">')
 result = result.replaceAll("\\<dr>", '<div class="flex flex-row">')
-result = result.replaceAll("\\<d>", '<div>')
+result = result.replaceAll("\\<d>", '<div class="">')
 //tokenswithdepth
 
 

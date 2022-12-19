@@ -14,31 +14,29 @@ const expr2   = ref('(add 1 1 1)')
 const expr    = ref('(add 1 1 (add 1 1) )')
 //const expr = ref('(concat "hello world")')
 
-const mytree =  [0,1,1,2,0]
-//const mystring =
-//`
-//d
-// dc
-// dr
-//  d
-//d
-//`
-const mysource = 
+//const mytree =  [0,1,1,2,0]
+const mystring =
 `
-//const tokens = mystring.trim().split("\\n")
-//const sublists = tokens.filter(t => t[0] != " ")
-//const nestings = tokens.map(t => [t.length - t.trimLeft().length ,t])
-//
-//const decend = (tree,level) => {
-//    const copytree = JSON.parse(JSON.stringify(tree))
-//    tree.forEach(element => {
-//        if(element[0] == " "){
-//             //tree.push([t,decend(
-//        }
-//    })
-//
-//    return tree
-//}
+dc
+ d
+ d
+  d
+  d
+  d
+d
+d
+d
+`
+
+const mysource =
+`
+const tokens = mystring.trim().split("\\n")
+const tokenswithdepth = tokens.map(t => [t.length - t.trimLeft().length ,t])
+const nestinglist = tokenswithdepth.map(tuple=>tuple[0])
+nestinglist
+
+const mytree = nestinglist
+
 
 var position = -1
 var result = ""
@@ -64,13 +62,38 @@ for(var j = 0; j< times; j++){
     result += "\\n  </div>"
 }
 
-result
+//result
+//tokenswithdepth
+
+
+`
+
+
+const __mysource = 
+`
+//
+//const decend = (tree,level) => {
+//    const copytree = JSON.parse(JSON.stringify(tree))
+//    tree.forEach(element => {
+//        if(element[0] == " "){
+//             //tree.push([t,decend(
+//        }
+//    })
+//
+//    return tree
+//}
+
+//result
 
 //decend(tokens,0)
+
 //nestings
 
 //const fuck = [ [1,[1,[]],[1,[[1,[]] ]        ,     [1,[]] ]]]
 //fuck
+
+
+
 `
 
 const functable = {
@@ -205,7 +228,7 @@ export default {
         RESULT OF SOURCE FILE {{jsevalresult_sourcefile}} 
     </div>
     <div class="sectionA">
-        RESULT <pre>{{jsevalresult_sourcefile}} </pre>
+        RESULT <pre><code lang="html">{{jsevalresult_sourcefile}} </code></pre>
     </div>
     <div class="sectionA">
         {{mysource}}

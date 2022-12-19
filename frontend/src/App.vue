@@ -18,20 +18,28 @@ const expr    = ref('(add 1 1 (add 1 1) )')
 const mystring =
 `
 dc
- d
- d
+ dr
   d
   d
-  d
-d
-d
+ dc
+  dc
+   dr
+    d
+    d
+  dc
+   dr
+    d
+    d
+   dr
+    d
+    d
 d
 `
 
 const mysource =
 `
 const tokens = mystring.trim().split("\\n")
-const tokenswithdepth = tokens.map(t => [t.length - t.trimLeft().length ,t])
+const tokenswithdepth = tokens.map(t => [t.length - t.trimLeft().length ,t.trimLeft()])
 const nestinglist = tokenswithdepth.map(tuple=>tuple[0])
 nestinglist
 
@@ -42,27 +50,30 @@ var position = -1
 var result = ""
 for(var i = 0; i < mytree.length; i++){
     if(mytree[i] == position) {
-        result += "\\n  </div><div>"
+        result += "\\n</div>" + "<" + tokenswithdepth[i][1] + ">"
     } 
     if(mytree[i] > position) {
-        result += "\\n  <div>"
+        result += "\\n" + "<" + tokenswithdepth[i][1] + ">"
     }
     if(mytree[i] < position) {
         const times = (position - mytree[i] + 1)
         for(var j = 0; j< times; j++){
-            result += "\\n  </div>"
+            result += "\\n</div>"
         }
-        result += "<div>"
+        result += "<" + tokenswithdepth[i][1] + ">"
     }
     position = mytree[i]
 }
 
 const times = position + 1
 for(var j = 0; j< times; j++){
-    result += "\\n  </div>"
+    result += "\\n</div>"
 }
 
-//result
+
+result = result.replaceAll("\\<dc>", '<div class="flex flex-col">')
+result = result.replaceAll("\\<dr>", '<div class="flex flex-row">')
+result = result.replaceAll("\\<d>", '<div>')
 //tokenswithdepth
 
 
@@ -205,6 +216,57 @@ export default {
 </style>
 
 <template>
+
+    <div class="sectionA bg-purple-400">
+
+
+        <div class="flex flex-col">
+           <div class="flex flex-row">
+              <div>
+                Account Register
+              </div>
+              <div>
+                My Awesome Account
+              </div>
+           </div>
+           <div class="flex flex-col">
+              <div class="flex flex-col">
+                 <div class="flex flex-row">
+                    <div>
+                        2022/12/18
+                    </div>
+                    <div>
+                        Bought stuff
+                    </div>
+                 </div>
+              </div>
+              <div class="flex flex-col">
+                 <div class="flex flex-row">
+                    <div>
+                        Account 1
+                    </div>
+                    <div>
+                        $5000.00
+                    </div>
+                 </div>
+                 <div class="flex flex-row">
+                    <div>
+                        Account 2
+                    </div>
+                    <div>
+                        {{}}
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+        <div>
+        </div>
+
+
+    </div>
+
+
 
     <div class="sectionA bg-red-100">
         <div class="sectionA bg-blue-100"> JS AREA </div>
